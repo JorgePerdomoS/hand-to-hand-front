@@ -55,16 +55,16 @@ export const mockWords: Word[] = [
     steps: [
       {
         stepNumber: 1,
-        imageUrl: '/mock/hola-1.jpg',
-        instruction: 'Levanta tu mano derecha',
+        imageUrl: '/src/assets/words/hola/paso1.jpg',
+        instruction: 'Levanta tu mano derecha a tu frente en saludo militar',
       },
       {
         stepNumber: 2,
-        imageUrl: '/mock/hola-2.jpg',
-        instruction: 'Mueve la mano de lado a lado',
+        imageUrl: '/src/assets/words/hola/paso2.jpg',
+        instruction: 'Mueve tu mano hacia alfrente',
       },
     ],
-    videoUrl: '/mock/hola.mp4',
+    videoUrl: 'https://www.youtube.com/watch?v=Jxb5CHTHitg&t=3s',
     category: 'Saludos',
     createdAt: '2024-01-17T10:00:00Z',
     updatedAt: '2024-01-17T10:00:00Z',
@@ -93,6 +93,7 @@ export const mockWords: Word[] = [
 
 export const mockAlphabet: AlphabetLetter[] = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('').map(letter => ({
   letter,
-  imageUrl: `/mock/alphabet/${letter.toLowerCase()}.jpg`,
+  imageUrl: `/src/assets/alphabet/${letter.toLowerCase()}.jpg`,
   videoUrl: `/mock/alphabet/${letter.toLowerCase()}.mp4`,
 }))
+

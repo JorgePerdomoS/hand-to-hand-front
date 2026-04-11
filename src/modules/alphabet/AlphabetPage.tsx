@@ -28,16 +28,14 @@ export default function AlphabetPage() {
                 </div>
 
                 {/* Mock Image Placeholder */}
-                <div className="bg-muted rounded-lg aspect-square flex items-center justify-center mb-2">
-                  <span className="text-5xl font-bold text-muted-foreground">
-                    {letter.letter}
-                  </span>
+                {/* Imagen de la seña */}
+                <div className="flex justify-center">
+                  <img
+                      src={letter.imageUrl}
+                      alt={`Letra ${letter.letter} en LSC`}
+                      className="rounded-lg border-2 border-gray-100"
+                  />
                 </div>
-
-                {/* Image reference */}
-                <p className="text-xs text-muted-foreground text-center truncate">
-                  {letter.imageUrl}
-                </p>
               </CardContent>
             </Card>
           ))}

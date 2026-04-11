@@ -19,7 +19,7 @@ export default function WordViewPage() {
       setLoading(true)
       try {
         const data = await dictionaryService.getWord(decodeURIComponent(word))
-        setWordData(data || null)
+    setWordData(data || null)
       } catch (error) {
         console.error('Error fetching word:', error)
       } finally {
@@ -95,9 +95,13 @@ export default function WordViewPage() {
                   <div className="flex-1">
                     {/* Mock Image Placeholder */}
                     <div className="bg-muted rounded-lg mb-3 aspect-video flex items-center justify-center">
-                      <p className="text-muted-foreground">
-                        Imagen paso {step.stepNumber}
-                      </p>
+                      <div className="flex justify-center mb-4">
+                        <img
+                            src={step.imageUrl}
+                            alt={`Paso ${step.stepNumber} de la seña`}
+                            className="rounded-lg shadow-sm border border-gray-100 max-h-64 object-contain"
+                        />
+                      </div>
                     </div>
                     <p className="text-lg">{step.instruction}</p>
                   </div>
@@ -121,12 +125,27 @@ export default function WordViewPage() {
             </CardHeader>
             <CardContent>
               {/* Mock Video Placeholder */}
-              <div className="bg-muted rounded-lg aspect-video flex items-center justify-center">
-                <Play className="h-16 w-16 text-muted-foreground" />
+              <div className="flex flex-col items-center justify-center min-h-screen w-full p-4">
+                  {/* Contenedor del Video */}
+                  <div className="overflow-hidden rounded-xl shadow-inner bg-black">
+                    <iframe
+                        width="585"
+                        height="439"
+                        src="https://www.youtube.com/embed/Jxb5CHTHitg"
+                        title="Hola - Lengua de señas colombiana"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                        className="max-w-full h-auto aspect-video"
+                    ></iframe>
+                  </div>
+
+                  {/* Pie de video */}
+                  <p className="text-sm text-gray-500 mt-4 font-medium italic">
+                    Video: {wordData.videoUrl}
+                  </p>
               </div>
-              <p className="text-sm text-muted-foreground mt-4">
-                Video: {wordData.videoUrl}
-              </p>
             </CardContent>
           </Card>
         )}
