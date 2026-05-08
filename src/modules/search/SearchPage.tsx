@@ -13,6 +13,7 @@ export default function SearchPage() {
   const [isSearching, setIsSearching] = useState(false)
   const { dictionaryService } = useApi()
 
+
   useEffect(() => {
     const searchWords = async () => {
       if (query.trim().length === 0) {

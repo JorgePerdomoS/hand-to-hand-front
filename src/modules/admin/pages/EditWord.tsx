@@ -27,10 +27,8 @@ export default function EditWord() {
       if (!id) return
 
       try {
-        // For mock data, we'll search by ID in the getAllWords
-        const allWords = await dictionaryService.getAllWords()
-        const foundWord = allWords.find(w => w.id === id)
-        
+        const foundWord = await dictionaryService.getWord(id) // ← id aquí es el nombre de la palabra
+
         if (foundWord) {
           setWord(foundWord.word)
           setDescription(foundWord.description)
@@ -71,7 +69,7 @@ export default function EditWord() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!word || !description || steps.some(s => !s.instruction)) {
       alert('Por favor completa todos los campos requeridos')
       return
@@ -81,14 +79,14 @@ export default function EditWord() {
 
     setSaving(true)
     try {
-      await dictionaryService.updateWord(id, {
+      await dictionaryService.updateWord(id, { // ← id es el nombre original
         word,
         description,
         category: category || undefined,
         videoUrl: videoUrl || undefined,
         steps,
       })
-      
+
       alert('Palabra actualizada exitosamente')
       navigate('/admin')
     } catch (error) {

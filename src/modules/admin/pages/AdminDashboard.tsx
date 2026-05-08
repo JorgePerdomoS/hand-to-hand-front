@@ -137,7 +137,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Link to={`/admin/editar/${word.id}`}>
+                      <Link to={`/admin/editar/${encodeURIComponent(word.word)}`}>
                         <Button variant="outline" size="sm" className="gap-2">
                           <Edit className="h-4 w-4" />
                           Editar

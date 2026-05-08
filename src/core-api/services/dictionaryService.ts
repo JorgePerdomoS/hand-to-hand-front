@@ -2,6 +2,12 @@ import type { Word } from '@/types'
 
 const BASE_URL = 'http://localhost:8080/word'
 
+const normalize = (str: string) =>
+    str.normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+
 export const dictionaryService = {
 
   async getAllWords(): Promise<Word[]> {
@@ -14,7 +20,6 @@ export const dictionaryService = {
     if (res.status === 204) return undefined
     const data: Word = await res.json()
 
-    // Asegura que cada imagen tenga el prefijo correcto
     data.steps = data.steps.map(step => ({
       ...step,
       imageData: step.imageData
@@ -30,8 +35,11 @@ export const dictionaryService = {
   async searchWords(query: string): Promise<Word[]> {
     const res = await fetch(`${BASE_URL}/all`)
     const words: Word[] = await res.json()
+    const normalizedQuery = normalize(query)
     return words.filter(w =>
-        w.word.toLowerCase().includes(query.toLowerCase())
+        normalize(w.word).includes(normalizedQuery) ||
+        normalize(w.description).includes(normalizedQuery) ||
+        normalize(w.category || '').includes(normalizedQuery)
     )
   },
 
@@ -43,8 +51,7 @@ export const dictionaryService = {
     })
   },
 
-  async updateWord(id: string, wordData: Partial<Word>): Promise<void> {
-    const word = wordData.word ?? id
+  async updateWord(word: string, wordData: Partial<Word>): Promise<void> {
     await fetch(`${BASE_URL}/update?word=${encodeURIComponent(word.toLowerCase())}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -52,8 +59,9 @@ export const dictionaryService = {
     })
   },
 
-  async deleteWord(id: string): Promise<void> {
-    await fetch(`${BASE_URL}/delete?word=${encodeURIComponent(id.toLowerCase())}`, {
+  async deleteWord(word: string): Promise<void> {
+    if (!word) throw new Error('Word is required')
+    await fetch(`${BASE_URL}/delete?word=${encodeURIComponent(word.toLowerCase())}`, {
       method: 'DELETE',
     })
   },
