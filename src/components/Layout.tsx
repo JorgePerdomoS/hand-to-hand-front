@@ -41,7 +41,7 @@ export default function Layout() {
       <footer className="border-t bg-muted/50">
         <div className="container mx-auto px-4 py-6">
           <p className="text-center text-sm text-muted-foreground">
-            © 2024 A Una Seña de Distancia - Diccionario de Lengua de Señas
+            © 2026 A Una Seña de Distancia - Diccionario de Lengua de Señas
           </p>
         </div>
       </footer>
