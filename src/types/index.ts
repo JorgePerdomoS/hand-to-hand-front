@@ -11,7 +11,7 @@ export interface Word {
 
 export interface WordStep {
   stepNumber: number
-  imageUrl: string
+  imageData: string
   instruction: string
 }
 

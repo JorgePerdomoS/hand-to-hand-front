@@ -26,14 +26,14 @@ export default function AdminDashboard() {
     fetchWords()
   }, [dictionaryService])
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (wordName: string) => {
     if (!confirm('¿Estás seguro de que deseas eliminar esta palabra?')) {
       return
     }
 
     try {
-      await dictionaryService.deleteWord(id)
-      setWords(words.filter(w => w.id !== id))
+      await dictionaryService.deleteWord(wordName)
+      setWords(words.filter(w => w.word !== wordName))
     } catch (error) {
       console.error('Error deleting word:', error)
       alert('Error al eliminar la palabra')
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                         variant="destructive"
                         size="sm"
                         className="gap-2"
-                        onClick={() => handleDelete(word.id)}
+                        onClick={() => handleDelete(word.word)}
                       >
                         <Trash2 className="h-4 w-4" />
                         Eliminar

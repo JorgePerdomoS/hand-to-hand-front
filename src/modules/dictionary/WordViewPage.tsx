@@ -1,155 +1,155 @@
-import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Play } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { useApi } from '@/core-api'
-import type { Word } from '@/types'
+  import { useEffect, useState } from 'react'
+  import { useParams, Link } from 'react-router-dom'
+  import { ArrowLeft, Play } from 'lucide-react'
+  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+  import { Button } from '@/components/ui/button'
+  import { useApi } from '@/core-api'
+  import type { Word } from '@/types'
 
-export default function WordViewPage() {
-  const { word } = useParams<{ word: string }>()
-  const [wordData, setWordData] = useState<Word | null>(null)
-  const [loading, setLoading] = useState(true)
-  const { dictionaryService } = useApi()
+  export default function WordViewPage() {
+    const { word } = useParams<{ word: string }>()
+    const [wordData, setWordData] = useState<Word | null>(null)
+    const [loading, setLoading] = useState(true)
+    const { dictionaryService } = useApi()
 
-  useEffect(() => {
-    const fetchWord = async () => {
-      if (!word) return
+    useEffect(() => {
+      const fetchWord = async () => {
+        if (!word) return
 
-      setLoading(true)
-      try {
-        const data = await dictionaryService.getWord(decodeURIComponent(word))
-    setWordData(data || null)
-      } catch (error) {
-        console.error('Error fetching word:', error)
-      } finally {
-        setLoading(false)
+        setLoading(true)
+        try {
+          const data = await dictionaryService.getWord(decodeURIComponent(word))
+      setWordData(data || null)
+        } catch (error) {
+          console.error('Error fetching word:', error)
+        } finally {
+          setLoading(false)
+        }
       }
+
+      fetchWord()
+    }, [word, dictionaryService])
+
+    if (loading) {
+      return (
+        <div className="container mx-auto px-4 py-12">
+          <p className="text-center">Cargando...</p>
+        </div>
+      )
     }
 
-    fetchWord()
-  }, [word, dictionaryService])
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <p className="text-center">Cargando...</p>
-      </div>
-    )
-  }
-
-  if (!wordData) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-3xl font-bold mb-4">Palabra no encontrada</h1>
-          <p className="text-muted-foreground mb-8">
-            No encontramos la palabra "{word}" en nuestro diccionario.
-          </p>
-          <Link to="/buscar">
-            <Button>Volver al buscador</Button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
-        <Link to="/buscar" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
-          <ArrowLeft className="h-4 w-4" />
-          Volver al buscador
-        </Link>
-
-        {/* Word Header */}
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold mb-4">{wordData.word}</h1>
-          <p className="text-xl text-muted-foreground">{wordData.description}</p>
-          {wordData.category && (
-            <p className="text-sm text-muted-foreground mt-2">
-              Categoría: {wordData.category}
+    if (!wordData) {
+      return (
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-3xl font-bold mb-4">Palabra no encontrada</h1>
+            <p className="text-muted-foreground mb-8">
+              No encontramos la palabra "{word}" en nuestro diccionario.
             </p>
-          )}
+            <Link to="/buscar">
+              <Button>Volver al buscador</Button>
+            </Link>
+          </div>
         </div>
+      )
+    }
 
-        {/* Steps Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Pasos para realizar la seña</CardTitle>
-            <CardDescription>
-              Sigue estos pasos en orden para realizar correctamente la seña
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {wordData.steps.map((step) => (
-                <div key={step.stepNumber} className="flex gap-6 items-start">
-                  {/* Step Number */}
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
-                    {step.stepNumber}
-                  </div>
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button */}
+          <Link to="/buscar" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
+            <ArrowLeft className="h-4 w-4" />
+            Volver al buscador
+          </Link>
 
-                  {/* Step Content */}
-                  <div className="flex-1">
-                    {/* Mock Image Placeholder */}
-                    <div className="bg-muted rounded-lg mb-3 aspect-video flex items-center justify-center">
-                      <div className="flex justify-center mb-4">
-                        <img
-                            src={step.imageUrl}
-                            alt={`Paso ${step.stepNumber} de la seña`}
-                            className="rounded-lg shadow-sm border border-gray-100 max-h-64 object-contain"
-                        />
-                      </div>
-                    </div>
-                    <p className="text-lg">{step.instruction}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+          {/* Word Header */}
+          <div className="mb-12">
+            <h1 className="text-5xl font-bold mb-4">{wordData.word}</h1>
+            <p className="text-xl text-muted-foreground">{wordData.description}</p>
+            {wordData.category && (
+              <p className="text-sm text-muted-foreground mt-2">
+                Categoría: {wordData.category}
+              </p>
+            )}
+          </div>
 
-        {/* Video Section */}
-        {wordData.videoUrl && (
-          <Card>
+          {/* Steps Section */}
+          <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Play className="h-5 w-5" />
-                Video demostrativo
-              </CardTitle>
+              <CardTitle>Pasos para realizar la seña</CardTitle>
               <CardDescription>
-                Mira el video completo de cómo realizar la seña
+                Sigue estos pasos en orden para realizar correctamente la seña
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Mock Video Placeholder */}
-              <div className="flex flex-col items-center justify-center min-h-screen w-full p-4">
-                  {/* Contenedor del Video */}
-                  <div className="overflow-hidden rounded-xl shadow-inner bg-black">
-                    <iframe
-                        width="585"
-                        height="439"
-                        src="https://www.youtube.com/embed/Jxb5CHTHitg"
-                        title="Hola - Lengua de señas colombiana"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                        className="max-w-full h-auto aspect-video"
-                    ></iframe>
-                  </div>
+              <div className="space-y-6">
+                {wordData.steps.map((step) => (
+                  <div key={step.stepNumber} className="flex gap-6 items-start">
+                    {/* Step Number */}
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
+                      {step.stepNumber}
+                    </div>
 
-                  {/* Pie de video */}
-                  <p className="text-sm text-gray-500 mt-4 font-medium italic">
-                    Video: {wordData.videoUrl}
-                  </p>
+                    {/* Step Content */}
+                    <div className="flex-1">
+                      {/* Mock Image Placeholder */}
+                      <div className="bg-muted rounded-lg mb-3 aspect-video flex items-center justify-center">
+                        <div className="flex justify-center mb-4">
+                          <img
+                              src={step.imageData}
+                              alt={`Paso ${step.stepNumber} de la seña`}
+                              className="rounded-lg shadow-sm border border-gray-100 max-h-64 object-contain"
+                          />
+                        </div>
+                      </div>
+                      <p className="text-lg">{step.instruction}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
-        )}
+
+          {/* Video Section */}
+          {wordData.videoUrl && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Play className="h-5 w-5" />
+                  Video demostrativo
+                </CardTitle>
+                <CardDescription>
+                  Mira el video completo de cómo realizar la seña
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* Mock Video Placeholder */}
+                <div className="flex flex-col items-center justify-center min-h-screen w-full p-4">
+                    {/* Contenedor del Video */}
+                    <div className="overflow-hidden rounded-xl shadow-inner bg-black">
+                      <iframe
+                          width="585"
+                          height="439"
+                          src={wordData.videoUrl}
+                          title="Hola - Lengua de señas colombiana"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                          className="max-w-full h-auto aspect-video"
+                      ></iframe>
+                    </div>
+
+                    {/* Pie de video */}
+                    <p className="text-sm text-gray-500 mt-4 font-medium italic">
+                      Video: {wordData.videoUrl}
+                    </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }

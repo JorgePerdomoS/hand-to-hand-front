@@ -1,54 +1,60 @@
 import type { Word } from '@/types'
-import { mockWords } from '@/data/mockData'
+
+const BASE_URL = 'http://localhost:8080/word'
 
 export const dictionaryService = {
-  // Get all words
+
   async getAllWords(): Promise<Word[]> {
-    // return apiClient.get('/words').then(res => res.data)
-    return Promise.resolve(mockWords)
+    const res = await fetch(`${BASE_URL}/all`)
+    return res.json()
   },
 
-  // Get a specific word
   async getWord(word: string): Promise<Word | undefined> {
-    // return apiClient.get(`/words/${word}`).then(res => res.data)
-    return Promise.resolve(
-      mockWords.find(w => w.word.toLowerCase() === word.toLowerCase())
-    )
+    const res = await fetch(`${BASE_URL}?word=${encodeURIComponent(word.toLowerCase())}`)
+    if (res.status === 204) return undefined
+    const data: Word = await res.json()
+
+    // Asegura que cada imagen tenga el prefijo correcto
+    data.steps = data.steps.map(step => ({
+      ...step,
+      imageData: step.imageData
+          ? step.imageData.startsWith('data:')
+              ? step.imageData
+              : `data:image/jpeg;base64,${step.imageData}`
+          : ''
+    }))
+
+    return data
   },
 
-  // Search words
   async searchWords(query: string): Promise<Word[]> {
-    // return apiClient.get(`/words/search?q=${query}`).then(res => res.data)
-    return Promise.resolve(
-      mockWords.filter(w => 
+    const res = await fetch(`${BASE_URL}/all`)
+    const words: Word[] = await res.json()
+    return words.filter(w =>
         w.word.toLowerCase().includes(query.toLowerCase())
-      )
     )
   },
 
-  // Create a new word (admin)
-  async createWord(wordData: Omit<Word, 'id' | 'createdAt' | 'updatedAt'>): Promise<Word> {
-    // return apiClient.post('/words', wordData).then(res => res.data)
-    const newWord: Word = {
-      ...wordData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-    return Promise.resolve(newWord)
+  async createWord(wordData: Omit<Word, 'id' | 'createdAt' | 'updatedAt'>): Promise<void> {
+    await fetch(`${BASE_URL}/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(wordData),
+    })
   },
 
-  // Update a word (admin)
-  async updateWord(id: string, wordData: Partial<Word>): Promise<Word> {
-    // return apiClient.put(`/words/${id}`, wordData).then(res => res.data)
-    const word = mockWords.find(w => w.id === id)
-    if (!word) throw new Error('Word not found')
-    return Promise.resolve({ ...word, ...wordData, updatedAt: new Date().toISOString() })
+  async updateWord(id: string, wordData: Partial<Word>): Promise<void> {
+    const word = wordData.word ?? id
+    await fetch(`${BASE_URL}/update?word=${encodeURIComponent(word.toLowerCase())}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(wordData),
+    })
   },
 
-  // Delete a word (admin)
   async deleteWord(id: string): Promise<void> {
-    // return apiClient.delete(`/words/${id}`).then(res => res.data)
-    return Promise.resolve()
+    await fetch(`${BASE_URL}/delete?word=${encodeURIComponent(id.toLowerCase())}`, {
+      method: 'DELETE',
+    })
   },
 }

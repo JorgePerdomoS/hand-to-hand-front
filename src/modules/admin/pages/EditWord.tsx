@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useApi } from '@/core-api'
 import type { Word, WordStep } from '@/types'
+import ImageUploader from '@/components/ImageUploader'
 
 export default function EditWord() {
   const { id } = useParams<{ id: string }>()
@@ -48,7 +49,7 @@ export default function EditWord() {
   }, [id, dictionaryService])
 
   const addStep = () => {
-    setSteps([...steps, { stepNumber: steps.length + 1, imageUrl: '', instruction: '' }])
+    setSteps([...steps, { stepNumber: steps.length + 1, imageData: '', instruction: '' }])
   }
 
   const removeStep = (index: number) => {
@@ -220,10 +221,9 @@ export default function EditWord() {
                     <label className="block text-sm font-medium mb-2">
                       URL de la imagen *
                     </label>
-                    <Input
-                      value={step.imageUrl}
-                      onChange={(e) => updateStep(index, 'imageUrl', e.target.value)}
-                      placeholder="/images/paso-1.jpg"
+                    <ImageUploader
+                        value={step.imageData}
+                        onChange={(base64) => updateStep(index, 'imageData', base64)}
                     />
                   </div>
 
